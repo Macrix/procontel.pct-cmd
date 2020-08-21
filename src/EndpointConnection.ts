@@ -1,6 +1,6 @@
-import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, IStreamResult } from '@aspnet/signalr';
 import { IDuplexConnection } from './';
-export { IHttpConnectionOptions };
+export { IHttpConnectionOptions, IStreamResult };
 
 export class EndpointConnection implements IDuplexConnection {
     private readonly connection: HubConnection;
@@ -38,5 +38,9 @@ export class EndpointConnection implements IDuplexConnection {
 
     onclose(callback: (error?: Error) => void): void{
         this.connection.onclose(callback);
+    }
+
+    stream<T = any>(methodName: string, ...args: any[]): IStreamResult<T> {
+        return this.connection.stream(methodName, ...args);
     }
 }
