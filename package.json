@@ -1,6 +1,6 @@
 {
   "name": "@macrix/pct-cmd",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Package provide communication layer to ProconTel web infrastructure",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

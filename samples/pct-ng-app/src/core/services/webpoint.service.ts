@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EndpointConnection } from '@macrix/pct-sdk';
+import { EndpointConnection } from '@macrix/pct-cmd';
 import { Observable, Observer, Subject, timer } from 'rxjs';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { delayWhen, map, retryWhen } from 'rxjs/operators';
@@ -43,7 +43,7 @@ export class WebpointService {
     start(userId: string, baseUrl: string): Observable<boolean> {
         return Observable.create((obs: Observer<boolean>) => {
             this.webpointConnection =
-                new EndpointConnection(baseUrl + '/hubs/', { accessTokenFactory: () => this.authorizationService.getAccessToken() });
+                new EndpointConnection(baseUrl + '/hubs/commands/', { accessTokenFactory: () => this.authorizationService.getAccessToken() });
 
             this.webpointConnection.onclose(error => {
                 if (error) {
@@ -58,22 +58,39 @@ export class WebpointService {
                 }
             });
 
-            this.webpointConnection.on('pendingOperation', (evt) => {
-                console.log(evt);
-                this.notifier.next({
-                        resource: evt.resource,
-                        status: OperationStatus.Pending,
-                        operationId: evt.aggregateId,
-                        code: ''
-                 });
-            });
+      
 
 
             return fromPromise(this.webpointConnection.start())
                 .pipe(
                      map((x) => {
+                         
+                        this.webpointConnection.on('order_created_www', (command) =>{
+                            console.log(command);
+                        } );
                         // store.dispatch(ConnectionsActions.connect(id));
-                        this.webpointConnection.send('SubscribeAsync');
+                        //this.webpointConnection.send('SubscribeAsync');
+                        // this.webpointConnection.stream('GetChannelReader', 'order_created_www')
+                        // .subscribe({
+                        //     next: (item) => {
+                        //         console.log(item);
+                        //         // var li = document.createElement("li");
+                        //         // li.textContent = item;
+                        //         // document.getElementById("messagesList").appendChild(li);
+                        //     },
+                        //     complete: () => {
+                        //         // var li = document.createElement("li");
+                        //         // li.textContent = "Stream completed";
+                        //         // document.getElementById("messagesList").appendChild(li);
+                        //         console.log('completed');
+                        //     },
+                        //     error: (err) => {
+                        //         // var li = document.createElement("li");
+                        //         // li.textContent = err;
+                        //         // document.getElementById("messagesList").appendChild(li);
+                        //         console.log(err);
+                        //     },
+                        // });
                     }),
                     map(x => true)
                 )
