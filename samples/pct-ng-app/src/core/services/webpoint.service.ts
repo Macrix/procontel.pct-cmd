@@ -58,16 +58,14 @@ export class WebpointService {
                 }
             });
 
-      
-
-
             return fromPromise(this.webpointConnection.start())
                 .pipe(
                      map((x) => {
-                         
-                        this.webpointConnection.on('order_created_www', (command) =>{
+                        this.webpointConnection.on('web_order_created', (command) =>{
                             console.log(command);
                         } );
+
+                        this.webpointConnection.post('PostAsync', 'create_order', {CustomerName: 'jkurdzieko'}).then(x => console.log(x));
                         // store.dispatch(ConnectionsActions.connect(id));
                         //this.webpointConnection.send('SubscribeAsync');
                         // this.webpointConnection.stream('GetChannelReader', 'order_created_www')

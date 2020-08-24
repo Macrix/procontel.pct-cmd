@@ -34,7 +34,7 @@ export class EndpointConnection implements IDuplexConnection {
         return this.connection.invoke(methodName, ...args);
     }
 
-    send(methodName: string, ...args: any[]): Promise<void> {
+    post(methodName: string, ...args: any[]): Promise<void> {
         return this.connection.send(methodName, ...args);
     }
 
