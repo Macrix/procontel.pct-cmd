@@ -3,10 +3,12 @@ export interface IDuplexConnection {
     start(): Promise<void>;
     stop(): Promise<void>;
 
-    on(methodName: string, newMethod: (...args: any[]) => void): void
-    off(methodName: string): void;
-    get<T = any>(methodName: string, ...args: any[]): Promise<T>;
-    send(methodName: string, ...args: any[]): Promise<void>;
+    on(commandId: string, newMethod: (...args: any[]) => void): void
+    off(commandId: string): void;
+    get<T = any>(commandId: string, arg: any): Promise<T>;
+    post(commandId: string, arg: any): Promise<void>;
  
     onclose(callback: (error?: Error) => void): void;
+    onreconnecting(callback: (error?: Error) => void): void;
+    onreconnected(callback: (connectionId?: string) => void): void;
 }
