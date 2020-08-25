@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, IStreamResult } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, IStreamResult } from '@microsoft/signalr';
 import { IDuplexConnection } from './';
 export { IHttpConnectionOptions, IStreamResult };
 
@@ -6,10 +6,10 @@ export class EndpointConnection implements IDuplexConnection {
     private readonly connection: HubConnection;
 
     constructor(url: string, options: IHttpConnectionOptions = {}) {
-        this.connection = new HubConnectionBuilder()
+        this.connection = new HubConnectionBuilder()  
+            .withAutomaticReconnect()
             .withUrl(url, options)
             .build();
-        this.connection.onclose((error?: Error) => this.onclose ?? (error));
     }
 
     start(): Promise<void> {
@@ -20,26 +20,34 @@ export class EndpointConnection implements IDuplexConnection {
         return this.connection.stop();
     }
 
-    on(methodName: string, newMethod: (...args: any[]) => void): Promise<any> {
-        this.connection.on(methodName, newMethod);
-        return this.connection.invoke("AddToGroupAsync", methodName)
+    on(commandId: string, newMethod: (...args: any[]) => void): Promise<any> {
+        this.connection.on(commandId, newMethod);
+        return this.connection.invoke("AddToGroupAsync", commandId)
     }
 
-    off(methodName: string): Promise<any> {
-        this.connection.off(methodName);
-        return this.connection.invoke("RemoveFromGroupAsync", methodName)
+    off(commandId: string): Promise<any> {
+        this.connection.off(commandId);
+        return this.connection.invoke("RemoveFromGroupAsync", commandId)
     }
 
-    get<T = any>(methodName: string, ...args: any[]): Promise<T> {
-        return this.connection.invoke(methodName, ...args);
+    get<T = any>(commandId: string, arg: any): Promise<T> {
+        return this.connection.invoke('GetAsync', commandId, arg);
     }
 
-    post(methodName: string, ...args: any[]): Promise<void> {
-        return this.connection.send(methodName, ...args);
+    post(commandId: string, arg: any): Promise<void> {
+        return this.connection.send('PostAsync', commandId, arg);
     }
 
     onclose(callback: (error?: Error) => void): void{
         this.connection.onclose(callback);
+    }
+
+    onreconnecting(callback: (error?: Error) => void): void{
+        this.connection.onreconnecting(callback);
+    }
+
+    onreconnected(callback: (connectionId?: string) => void): void{
+        this.connection.onreconnected(callback);
     }
 
     stream<T = any>(methodName: string, ...args: any[]): IStreamResult<T> {
