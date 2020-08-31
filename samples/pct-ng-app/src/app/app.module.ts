@@ -1,10 +1,12 @@
-import { AuthorizationService } from './../core/services/authorization.service';
+import { AuthorizationService, WebpointService } from './core/services';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { WebpointService } from 'src/core/services/webpoint.service';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from './shared/shared.module';
 
 
 
@@ -14,7 +16,12 @@ import { WebpointService } from 'src/core/services/webpoint.service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    SharedModule
   ],
   providers: [AuthorizationService, WebpointService],
   bootstrap: [AppComponent]

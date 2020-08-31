@@ -1,3 +1,4 @@
+import { HubConnectionState } from "@microsoft/signalr"
 
 export interface IDuplexConnection {
     start(): Promise<void>;
@@ -11,4 +12,6 @@ export interface IDuplexConnection {
     onclose(callback: (error?: Error) => void): void;
     onreconnecting(callback: (error?: Error) => void): void;
     onreconnected(callback: (connectionId?: string) => void): void;
+
+    state: HubConnectionState;
 }

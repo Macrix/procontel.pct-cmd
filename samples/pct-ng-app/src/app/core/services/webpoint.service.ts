@@ -7,7 +7,8 @@ import { AuthorizationService } from './authorization.service';
     providedIn: 'root'
 })
 export class WebpointService {
-    private webpointConnection: EndpointConnection;
+
+    public webpointConnection: EndpointConnection;
     private readonly notifier: Subject<any>;
     constructor(private authorizationService: AuthorizationService) {
         this.notifier = new Subject<any>();
@@ -17,15 +18,15 @@ export class WebpointService {
         return this.notifier.asObservable();
     }
 
-    createOrder() {
-        this.webpointConnection.post('create_order', { CustomerName: 'jkurdzieko' }).then(x => console.log(x));
+    createOrder(command: any): Promise<any> {
+        return this.webpointConnection.post('create_order', command);
     }
 
-    getOrder() {
-        this.webpointConnection.get('create_order_sync', { CustomerName: 'dwilczak' }).then(x => console.log(x));
+    getOrder(command: any): Promise<any> {
+        return this.webpointConnection.get('create_order_sync', command);
     }
 
-    public start(baseUrl: string){
+    public start(baseUrl: string) {
         this.webpointConnection = new EndpointConnection(
             baseUrl + '/hubs/commands/',
             { accessTokenFactory: () => this.authorizationService.getAccessToken() });
@@ -53,13 +54,13 @@ export class WebpointService {
             .catch(err => console.log('Error while starting connection: ' + err));
     }
 
-    subscribe(){
+    subscribe() {
         this.webpointConnection.on('web_order_created', (command) => {
-            console.log(command);
+            this.notifier.next(command);
         });
     }
 
-    unsubscribe(){
+    unsubscribe() {
         this.webpointConnection.off('web_order_created');
     }
 }
