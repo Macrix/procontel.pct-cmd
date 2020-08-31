@@ -1,15 +1,19 @@
-import { HubConnection, HubConnectionBuilder, IHttpConnectionOptions, IStreamResult } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, HubConnectionState, IHttpConnectionOptions, IStreamResult } from '@microsoft/signalr';
 import { IDuplexConnection } from './';
-export { IHttpConnectionOptions, IStreamResult };
+export { IHttpConnectionOptions, IStreamResult, HubConnectionState };
 
 export class EndpointConnection implements IDuplexConnection {
     private readonly connection: HubConnection;
 
     constructor(url: string, options: IHttpConnectionOptions = {}) {
-        this.connection = new HubConnectionBuilder()  
+        this.connection = new HubConnectionBuilder()
             .withAutomaticReconnect()
             .withUrl(url, options)
             .build();
+    }
+
+    get state(): HubConnectionState {
+        return this.connection.state;
     }
 
     start(): Promise<void> {
@@ -38,15 +42,15 @@ export class EndpointConnection implements IDuplexConnection {
         return this.connection.send('PostAsync', commandId, arg);
     }
 
-    onclose(callback: (error?: Error) => void): void{
+    onclose(callback: (error?: Error) => void): void {
         this.connection.onclose(callback);
     }
 
-    onreconnecting(callback: (error?: Error) => void): void{
+    onreconnecting(callback: (error?: Error) => void): void {
         this.connection.onreconnecting(callback);
     }
 
-    onreconnected(callback: (connectionId?: string) => void): void{
+    onreconnected(callback: (connectionId?: string) => void): void {
         this.connection.onreconnected(callback);
     }
 
