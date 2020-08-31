@@ -4,7 +4,7 @@
 
 1. [Quick introduction](#id-quick-introduction)
 2. [Installation](#id-installation)
-3. [Features](#id-feature)
+3. [Features](#id-features)
 4. [Angular](#id-angular)
     1. [Start connection](#id-angular-start-connection)
     2. [Post command](#id-angular-post-command)
@@ -117,6 +117,8 @@ This is simple example how we can decorate endpoint class.
   {
   }
 ```
+
+<div id='id-deployment'/>
 
 ## 6. Deployment
 
