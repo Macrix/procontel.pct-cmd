@@ -1,4 +1,4 @@
-import { AuthorizationService, WebpointService } from './core/services';
+import { EndpointConnection, IDuplexConnection } from '@macrix/pct-cmd';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -23,7 +23,9 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     SharedModule
   ],
-  providers: [AuthorizationService, WebpointService],
+  providers: [
+    {provide: EndpointConnection, useValue: new EndpointConnection('http://localhost:9000')},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,2 +1,1 @@
-export * from './authorization.service';
-export * from './webpoint.service';
+export * from './endpoint-connection.factory';

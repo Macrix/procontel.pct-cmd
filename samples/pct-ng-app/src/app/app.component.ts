@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HubConnectionState } from '@macrix/pct-cmd';
-import { WebpointService } from './core/services';
+import { EndpointConnection, HubConnectionState } from '@macrix/pct-cmd';
+import { EndpointConnectionFactory } from './core/services';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +15,15 @@ export class AppComponent implements OnInit {
   {
     "CustomerName": "ProconTEL team"
   }`;
+
   form: FormGroup;
-  constructor(private webpointService: WebpointService, private formBuilder: FormBuilder) {
+  endpointConnection: EndpointConnection;
+
+  constructor(
+    private connectionFactory: EndpointConnectionFactory,
+    private formBuilder: FormBuilder) {
     this.title = 'ProconTEL';
     this.console = new Array<string>();
-    this.webpointService
-      .getPipe()
-      .subscribe(x => this.console.push(`Received notification: ${JSON.stringify(x)}.`));
   }
   ngOnInit() {
     this.form = this.formBuilder.group({
@@ -30,22 +32,32 @@ export class AppComponent implements OnInit {
     this.form.markAllAsTouched();
   }
 
-  start() {
-    this.webpointService.start(this.form.get('ip').value);
+  async start() {
+    this.endpointConnection = await this.connectionFactory.start(this.form.get('ip').value);
+    this.endpointConnection.onreconnected(id => {
+      this.endpointConnection.off('web_order_created');
+      this.subscribe();
+    });
+    this.subscribe();
   }
 
-  stop() {
-    this.webpointService.webpointConnection.stop().then(x => { });
+  subscribe() {
+    this.endpointConnection.on('web_order_created', (command) => {
+      this.console.push(`Received notification: ${JSON.stringify(this.command)}.`);
+    });
+  }
+
+  async stop() {
+    await this.endpointConnection.stop();
   }
 
   get state(): HubConnectionState {
-    return this.webpointService.webpointConnection && this.webpointService.webpointConnection.state;
+    return this.endpointConnection && this.endpointConnection.state;
   }
 
   get isConnected(): boolean {
     return this.state === HubConnectionState.Connected;
   }
-
 
   clearConsole() {
     this.console.splice(0, this.console.length);
@@ -54,12 +66,16 @@ export class AppComponent implements OnInit {
   createOrder() {
     this.clearConsole();
     this.console.push(`Sending POST command: ${JSON.stringify(this.command)}.`);
-    this.webpointService.createOrder(JSON.parse(this.command)).then(x => this.console.push('Command sent.'));
+    this.endpointConnection
+      .post('create_order', JSON.parse(this.command))
+      .then(x => this.console.push('Command sent.'));
   }
 
   getOrder() {
     this.clearConsole();
     this.console.push(`Sending GET command: ${JSON.stringify(this.command)}.`);
-    this.webpointService.getOrder(JSON.parse(this.command)).then(x => this.console.push(`Received: ${JSON.stringify(x)}.`));
+    this.endpointConnection
+      .get('create_order_sync', JSON.parse(this.command))
+      .then(x => this.console.push(`Received: ${JSON.stringify(x)}.`));
   }
 }
