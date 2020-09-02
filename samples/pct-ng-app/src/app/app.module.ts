@@ -1,4 +1,4 @@
-import { EndpointConnection, IDuplexConnection } from '@macrix/pct-cmd';
+import {  EndpointConnectionFactory } from '@macrix/pct-cmd';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -24,7 +24,7 @@ import { SharedModule } from './shared/shared.module';
     SharedModule
   ],
   providers: [
-    {provide: EndpointConnection, useValue: new EndpointConnection('http://localhost:9000')},
+    {provide: EndpointConnectionFactory, useValue: new EndpointConnectionFactory()},
   ],
   bootstrap: [AppComponent]
 })

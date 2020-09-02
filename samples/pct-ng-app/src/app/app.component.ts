@@ -1,7 +1,8 @@
+import { environment } from './../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EndpointConnection, HubConnectionState } from '@macrix/pct-cmd';
-import { EndpointConnectionFactory } from './core/services';
+import { EndpointConnection, EndpointConnectionFactory } from '@macrix/pct-cmd';
+import { HubConnectionState } from '@microsoft/signalr';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
   }
   ngOnInit() {
     this.form = this.formBuilder.group({
-      ip: [null, Validators.required]
+      ip: [environment.procontelEndpointUrl, Validators.required]
     });
     this.form.markAllAsTouched();
   }

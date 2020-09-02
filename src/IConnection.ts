@@ -1,6 +1,6 @@
 import { HubConnectionState } from "@microsoft/signalr"
 
-export interface IDuplexConnection {
+export interface IConnection {
     start(): Promise<void>;
     stop(): Promise<void>;
 

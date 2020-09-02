@@ -1,2 +1,3 @@
 export * from "./EndpointConnection";
-export * from "./IDuplexConnection";
+export * from "./EndpointConnectionFactory";
+export * from "./IConnection";
