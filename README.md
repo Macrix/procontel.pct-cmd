@@ -7,12 +7,18 @@
 3. [Features](#id-features)
 4. [Angular](#id-angular)
     1. [Start connection](#id-angular-start-connection)
-    2. [Post command](#id-angular-post-command)
-    3. [Get command](#id-angular-get-command)
+    2. [Reconnect](#id-angular-reconnect)
+    3. [On](#id-angular-on)
+    4. [Off](#id-angular-off)
+    5. [Post](#id-angular-post)
+    6. [Get](#id-angular-get)
 5. [React](#id-react)
     1. [Start connection](#id-react-start-connection)
-    2. [Post command](#id-react-post-command)
-    3. [Get command](#id-react-get-command)
+    2. [Reconnect](#id-react-reconnect)
+    3. [On](#id-react-on)
+    4. [Off](#id-react-off)
+    5. [Post](#id-react-post)
+    6. [Get](#id-react-get)
 6. [Deployment](#id-deployment)
 
 <div id='id-quick-introduction'/>
@@ -35,8 +41,12 @@ Table below lists feature available in package *@macrix/pct-cmd* and compares it
 
 | Feature                   | 1.0.13 <br>*Current*  | <br>*Next*  |
 | :---                      |:---:                  |:---:        |
-| Start connection          | ✓                     | ✓           | 
-| Stop  connection          | ✓                     | ✓           | 
+| Start connection          | ✓                     | ✓           |
+| Reconnect                 | ✓                     | ✓           |
+| On                        | ✓                     | ✓           | 
+| Off                       | ✓                     | ✓           | 
+| Post                      | ✓                     | ✓           | 
+| Get                       | ✓                     | ✓           | 
 
 <div id='id-angular'/>
 
@@ -49,34 +59,83 @@ To run angular sample app run command:
 <div id='id-angular-start-connection'/>
 
 * ### Start connection
-This is simple example how we can decorate endpoint class.
+This is simple example how to start connection with endpoint.
 ```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
+import { EndpointConnection } from '@macrix/pct-cmd';
+
+export class EndpointConnectionFactory {
+    public async start(baseUrl: string): Promise<EndpointConnection> {
+        const webpointConnection = new EndpointConnection(baseUrl + '/hubs/commands/');
+        await webpointConnection.start();
+        return webpointConnection;
+    }
+}
 ```
 
-<div id='id-angular-post-command'/>
+<div id='id-angular-reconnect'/>
 
-* ### Post command
-This is simple example how we can decorate endpoint class.
+* ### Reconnect
+This is simple example how to appropriate handle reconnect process.
+
+<b>IMPORTANT: Always unsubscribe and subscribe during reconnect process.  </b>
+
 ```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
+  this.endpointConnection = await this.connectionFactory.start('http://localhost:5000');
+    this.endpointConnection.onreconnected(id => {
+      this.endpointConnection.off('web_order_created');
+      this.endpointConnection.on('web_order_created', (command) => {
+        //some business logic
+      });
+    });
 ```
 
-<div id='id-angular-get-command'/>
+<div id='id-angular-on'/>
 
-* ### Get command
-This is simple example how we can decorate endpoint class.
+* ### On
+This is simple example how we can <b>subscribe</b> on server push notification.
+
+<b>IMPORTANT: Subscribe on server push notification after connection start established. </b>
+
 ```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
+  this.endpointConnection = await this.connectionFactory.start('http://localhost:5000');
+  this.endpointConnection.on('web_order_created', (command) => {
+    //some business logic
+  });
+});
+```
+<div id='id-angular-off'/>
+
+* ### Off
+This is simple example how we can <b>unsubscribe</b> on server push notification.
+
+```csharp
+  this.endpointConnection.off('web_order_created');
+```
+
+<div id='id-angular-post'/>
+
+* ### Post
+This is simple example how we can send <b>POST</b> command. Operation result will be deliver by server push notification.
+```csharp
+  this.endpointConnection.on('web_order_created', (command) => {
+    //some business logic
+  });
+
+  this.endpointConnection
+    .post('create_order', this.command)
+    .then(x => console.log('Command sent.'));
+```
+
+<div id='id-angular-get'/>
+
+* ### Get 
+This is simple example how we can send <b>GET</b> command. Operation result will be deliver as a <b>GET</b> method result.
+```csharp
+  this.endpointConnection
+    .get('create_order_sync', this.command)
+    .then(x => {
+      //some business logic
+    }));
 ```
 
 <div id='id-react'/>
@@ -88,35 +147,38 @@ List of  code samples which describes how to integrate `@macrix/pct-cmd` with `r
 <div id='id-react-start-connection'/>
 
 * ### Start connection
-This is simple example how we can decorate endpoint class.
-```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
-```
 
-<div id='id-react-post-command'/>
+Sample construction in progress
 
-* ### Post command
-This is simple example how we can decorate endpoint class.
-```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
-```
+<div id='id-react-reconnect'/>
 
-<div id='id-react-get-command'/>
+* ### Reconnect
 
-* ### Get command
-This is simple example how we can decorate endpoint class.
-```csharp
-  [EndpointMetadata(Name = "Empty", SupportedRoles = SupportedRoles.Both)]
-  public class EmptyEndpoint
-  {
-  }
-```
+Sample construction in progress
+
+<div id='id-react-on'/>
+
+* ### On
+
+Sample construction in progress
+
+<div id='id-react-off'/>
+
+* ### Off
+
+Sample construction in progress
+
+<div id='id-react-post'/>
+
+* ### Pos
+
+Sample construction in progress
+
+<div id='id-react-get'/>
+
+* ### Get
+
+Sample construction in progress
 
 <div id='id-deployment'/>
 
