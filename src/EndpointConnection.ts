@@ -1,8 +1,7 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState, IHttpConnectionOptions, IStreamResult } from '@microsoft/signalr';
-import { IDuplexConnection } from './';
-export { IHttpConnectionOptions, IStreamResult, HubConnectionState };
+import { IConnection } from './';
 
-export class EndpointConnection implements IDuplexConnection {
+export class EndpointConnection implements IConnection {
     private readonly connection: HubConnection;
 
     constructor(url: string, options: IHttpConnectionOptions = {}) {

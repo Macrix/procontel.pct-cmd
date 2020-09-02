@@ -22,7 +22,7 @@
     "@angular/platform-browser": "~10.0.12",
     "@angular/platform-browser-dynamic": "~10.0.12",
     "@angular/router": "~10.0.12",
-    "@macrix/pct-cmd": "1.0.13",
+    "@macrix/pct-cmd": "1.0.17",
     "rxjs": "~6.6.2",
     "tslib": "^2.0.1",
     "zone.js": "~0.11.1"
