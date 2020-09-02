@@ -7,31 +7,17 @@ on:
     branches: [ master ]
 
 jobs:
-  ProconTelJwt:
-    runs-on: windows-latest
-    env:
-      working-directory: ./src/Procontel.Jwt
-      version: 1.0.${{ github.run_number }}
-      
+  publish:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+    # Setup .npmrc file to publish to npm
+    - uses: actions/setup-node@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore -s https://nexus.macrix.eu/repository/nuget/ -s https://api.nuget.org/v3/index.json --force --no-cache
-      working-directory: ${{env.working-directory}}
-    - name: Build
-      run: dotnet publish -c Release /p:Version=${{env.version}} --no-restore
-      working-directory: ${{env.working-directory}}
-    - name: Push nuget
-      run: dotnet nuget push **/*.nupkg
-        --api-key ${{ secrets.NUGET_DEPLOY_KEY }}
-        --source ${{ secrets.NUGET_URL }}
-        --no-symbols true
-    - uses: actions/upload-artifact@v1
-      with:
-        name: Procontel.Jwt
-        path: ${{ env.working-directory }}/bin/Release/netstandard2.0
-      name: Upload Artifact
+        node-version: '12.x'
+        registry-url: 'https://registry.npmjs.org'
+    - run: npm install
+    - run: npm run build
+    - run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
