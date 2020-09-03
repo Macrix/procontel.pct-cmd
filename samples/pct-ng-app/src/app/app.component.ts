@@ -36,14 +36,14 @@ export class AppComponent implements OnInit {
   async start() {
     this.endpointConnection = await this.connectionFactory.start(this.form.get('ip').value);
     this.endpointConnection.onreconnected(id => {
-      this.endpointConnection.off('web_order_created');
+      this.endpointConnection.off('order_created');
       this.subscribe();
     });
     this.subscribe();
   }
 
   subscribe() {
-    this.endpointConnection.on('web_order_created', (command) => {
+    this.endpointConnection.on('order_created', (command) => {
       this.console.push(`Received notification: ${JSON.stringify(this.command)}.`);
     });
   }
