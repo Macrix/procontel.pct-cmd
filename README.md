@@ -39,7 +39,7 @@ You can install the latest released JavaScript client from npm with the followin
 ## 3. Features
 Table below lists feature available in package *@macrix/pct-cmd* and compares it with features available in next release.
 
-| Feature                   | 1.0.17 <br>*Current*  | <br>*Next*  |
+| Feature                   | 1.0.18 <br>*Current*  | <br>*Next*  |
 | :---                      |:---:                  |:---:        |
 | Start connection          | ✓                     | ✓           |
 | Reconnect                 | ✓                     | ✓           |
