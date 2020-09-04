@@ -1,6 +1,6 @@
 import { HubConnectionState } from "@microsoft/signalr"
 
-export interface IConnection {
+export interface IEndpointConnection {
     start(): Promise<void>;
     stop(): Promise<void>;
 
@@ -10,6 +10,7 @@ export interface IConnection {
     post(commandId: string, arg: any): Promise<void>;
  
     onclose(callback: (error?: Error) => void): void;
+    onconnected(callback: (connectionId?: string) => void): void;
     onreconnecting(callback: (error?: Error) => void): void;
     onreconnected(callback: (connectionId?: string) => void): void;
 
