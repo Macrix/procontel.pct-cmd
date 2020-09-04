@@ -1,9 +1,7 @@
-import { EndpointConnection } from ".";
+import { EndpointConnection, IEndpointConnection } from ".";
 
 export class EndpointConnectionFactory {
-    public async start(baseUrl: string): Promise<EndpointConnection> {
-        const webpointConnection = new EndpointConnection(baseUrl + '/hubs/commands/');
-        await webpointConnection.start();
-        return webpointConnection;
+    public create(baseUrl: string): IEndpointConnection {
+        return new EndpointConnection(baseUrl + '/hubs/commands/');
     }
 }

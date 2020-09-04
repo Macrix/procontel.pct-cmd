@@ -1,14 +1,15 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState, IHttpConnectionOptions, IStreamResult } from '@microsoft/signalr';
-import { IConnection } from './';
+import { IEndpointConnection } from './';
 
-export class EndpointConnection implements IConnection {
+export class EndpointConnection implements IEndpointConnection {
     private readonly connection: HubConnection;
-
+    private connectedCallbacks: Array<(connectionId?: string) => void>;
     constructor(url: string, options: IHttpConnectionOptions = {}) {
         this.connection = new HubConnectionBuilder()
             .withAutomaticReconnect()
             .withUrl(url, options)
             .build();
+        this.connectedCallbacks = [];
     }
 
     get state(): HubConnectionState {
@@ -16,7 +17,12 @@ export class EndpointConnection implements IConnection {
     }
 
     start(): Promise<void> {
-        return this.connection.start();
+        return this.startInternal();
+    }
+
+    private async startInternal(): Promise<void> {
+        await this.connection.start();
+        this.connectedCallbacks.forEach((c) => c.apply(this, [this.connection.connectionId!]));
     }
 
     stop(): Promise<void> {
@@ -51,6 +57,13 @@ export class EndpointConnection implements IConnection {
 
     onreconnected(callback: (connectionId?: string) => void): void {
         this.connection.onreconnected(callback);
+    }
+
+    onconnected(callback: (connectionId?: string) => void): void {
+        if (callback) {
+            this.connectedCallbacks.push(callback);
+            this.connection.onreconnected(callback);
+        }
     }
 
     stream<T = any>(methodName: string, ...args: any[]): IStreamResult<T> {
