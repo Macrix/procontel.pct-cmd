@@ -1,5 +1,8 @@
 # pct-cmd
 
+[![npm version](https://badge.fury.io/js/@macrix%2Fpct-cmd.svg)](https://www.npmjs.org/package/@macrix/pct-cmd)
+[![install size](https://packagephobia.now.sh/badge?p=@macrix%2Fpct-cmd)](https://packagephobia.now.sh/result?p=@macrix/pct-cmd)
+[![npm downloads](https://img.shields.io/npm/dm/@macrix%2Fpct-cmd.svg?style=flat-square)](http://npm-stat.com/charts.html?package=@macrix/pct-cmd)
 ## Table of Contents
 
 1. [Quick introduction](#id-quick-introduction)
@@ -39,7 +42,7 @@ You can install the latest released JavaScript client from npm with the followin
 ## 3. Features
 Table below lists feature available in package *@macrix/pct-cmd* and compares it with features available in next release.
 
-| Feature                   | [![npm version](https://badge.fury.io/js/survey-monkey-streams.svg)](//npmjs.com/package/@macrix/pct-cmd)  | <br>*Next*  |
+| Feature                   | [![npm version](https://badge.fury.io/js/@macrix%2Fpct-cmd.svg)](https://www.npmjs.org/package/@macrix/pct-cmd) | <br>*Next*  |
 | :---                      |:---:                  |:---:        |
 | Start connection          | ✓                     | ✓           |
 | Reconnect                 | ✓                     | ✓           |
