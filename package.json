@@ -1,6 +1,6 @@
 {
   "name": "@macrix/pct-cmd",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "Package provide communication layer to ProconTel web infrastructure",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,10 +8,10 @@
     "dist"
   ],
   "dependencies": {
-    "@microsoft/signalr": "^3.1.7",
-    "npm-check-updates": "^7.1.1"
+    "@microsoft/signalr": "^3.1.7"
   },
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "scripts": {
     "build": "tsc",
     "prepare-package": "npm run build",
