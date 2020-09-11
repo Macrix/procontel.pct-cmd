@@ -1,58 +1,87 @@
 import { EndpointConnectionFactory, IEndpointConnection } from '@macrix/pct-cmd';
 import React from 'react';
 import { useFormInput } from './../hooks';
+import { HubConnectionState } from '@microsoft/signalr';
 
-type Props = {
-}
-export const Orders: React.FC<Props> = props => {
+type Props = {}
+export const Orders: React.FC = props => {
     const { } = props;
-    const ip = useFormInput('http://localhost:7001');
+    const ip = useFormInput('http://localhost:6001');
     const [factory, setFactory] = React.useState(new EndpointConnectionFactory());
     const [connection, setConnection] = React.useState<IEndpointConnection>(null!);
-    const [console, setConsole] = React.useState(new Array<string>());
-    const handleSubmit = () => { }
+    const [connectionState, setConnectionState] = React.useState<HubConnectionState>(HubConnectionState.Disconnected);
+    const [logs, _setLogs] = React.useState<string[]>([]);
+
+    const stateRef = React.useRef(logs);
+    const setLogs = (data: string[]) => {
+        stateRef.current = data;
+        _setLogs(data);
+    };
+
+    const handleSubmit = () => { };
+
     const start = async () => {
         const connection = factory.create(ip.value);
         connection.onconnected(id => {
             connection.off('order_created');
             connection.on('order_created', (command) => {
-                setConsole([
-                    ...console,
+                setLogs([
+                    ...stateRef.current,
                     `Received notification: ${JSON.stringify(command)}.`
                 ]);
             });
         });
-        await connection.start();
+        try {
+            await connection.start();
+        }
+        catch (err) {
+            console.error(err);
+        }
         setConnection(connection);
+        setConnectionState(connection.state);
     };
 
     const stop = async () => {
         await connection.stop();
+        setConnectionState(connection.state);
     };
+
     const printConnectionButtons = () =>
-        connection && connection.state === 'Connected' ?
+        connectionState && connectionState === 'Connected' ?
             (<button onClick={async (ev) => await stop()}>Stop</button>) :
             (<button onClick={async (ev) => await start()}>Start</button>)
-    const printConnectionStatus = () => connection ? connection.state : 'Not started'
 
 
-    return <div>
-        <form onSubmit={handleSubmit}>
-            <label>
-                Endpoint IP:
-            </label>
+    return (
+        <>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Endpoint IP:
+             </label>
+                <br></br>
+                <input type="text" name="name" {...ip} disabled={connectionState !== 'Disconnected'}/>
+            </form>
+            {connectionState}
             <br></br>
-            <input type="text" name="name" {...ip} />
-        </form>
-        {printConnectionStatus()}
-        <br></br>
-        {printConnectionButtons()}
-        <ul>
-            {console.map((item, idx) => (
-                <li key={idx}>{item}</li>
-            ))}
-        </ul>
-    </div>
+            {printConnectionButtons()}
+            {/* <form onSubmit={addItem}>
+                <label>
+                    <input
+                        name="item"
+                        type="text"
+                        value={itemName}
+                        onChange={e => setItemName(e.target.value)}
+                    />
+                </label>
+            </form> */}
+
+            <ul>
+                {logs.map((log, idx) => (
+                    <li key={idx}>{log}</li>
+                ))}
+            </ul>
+        </>
+    )
 }
     // constructor(props: {}) {
     //     super(props);
