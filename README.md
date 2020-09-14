@@ -57,7 +57,7 @@ Table below lists feature available in package *@macrix/pct-cmd* and compares it
 
 List of  code samples which describes how to integrate `@macrix/pct-cmd` with `angular` framework. 
 To run angular sample app run command:
-```docker run --rm -p 3000:80 macrix/pct-ng-app``` 
+```docker run -d --rm -p 3000:80 macrix/pct-ng-app``` 
 
 <div id='id-angular-start-connection'/>
 
@@ -162,7 +162,7 @@ This is simple example how we can send <b>GET</b> command. Operation result will
 
 List of  code samples which describes how to integrate `@macrix/pct-cmd` with `react` framework.
 To run react sample app run command:
-```docker run --rm -p 3000:80 macrix/pct-react-app``` 
+```docker run -d --rm -p 3000:80 macrix/pct-react-app``` 
 <div id='id-react-start-connection'/>
 
 * ### Start connection
