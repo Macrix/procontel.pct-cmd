@@ -57,7 +57,7 @@ Table below lists feature available in package *@macrix/pct-cmd* and compares it
 
 List of  code samples which describes how to integrate `@macrix/pct-cmd` with `angular` framework. 
 To run angular sample app run command:
-```docker run -p 3000:80 macrix/pct-ng-app``` 
+```docker run --rm -p 3000:80 macrix/pct-ng-app``` 
 
 <div id='id-angular-start-connection'/>
 
@@ -68,10 +68,24 @@ import { EndpointConnection } from '@macrix/pct-cmd';
 
 export class EndpointConnectionFactory {
     public async start(baseUrl: string): Promise<EndpointConnection> {
-        const webpointConnection = new EndpointConnection(baseUrl + '/hubs/commands/');
-        await webpointConnection.start();
-        return webpointConnection;
+        const endpointConnection = new EndpointConnection(baseUrl + '/hubs/commands/');
+        await endpointConnection.start();
+        return endpointConnection;
     }
+}
+```
+
+or use existing factory method
+```csharp
+import { EndpointConnectionFactory, IEndpointConnection } from '@macrix/pct-cmd';
+
+export class AppComponent implements OnInit {
+  endpointConnection: IEndpointConnection;
+  constructor(private connectionFactory: EndpointConnectionFactoryr) { }
+  async start() {
+    this.endpointConnection = this.connectionFactory.create(environment.procontelEndpointUrl);
+    await this.endpointConnection.start();
+  }
 }
 ```
 
@@ -83,10 +97,10 @@ This is simple example how to appropriate handle reconnect process.
 <b>IMPORTANT: Always unsubscribe and subscribe during reconnect process.  </b>
 
 ```csharp
-  this.endpointConnection = await this.connectionFactory.start('http://localhost:5000');
-    this.endpointConnection.onreconnected(id => {
-      this.endpointConnection.off('web_order_created');
-      this.endpointConnection.on('web_order_created', (command) => {
+  this.endpointConnection = this.connectionFactory.create(environment.procontelEndpointUrl);
+    this.endpointConnection.onconnected(async id => {
+      await this.endpointConnection.off('order_created');
+      await this.endpointConnection.on('order_created', (command) => {
         //some business logic
       });
     });
@@ -100,8 +114,9 @@ This is simple example how we can <b>subscribe</b> on server push notification.
 <b>IMPORTANT: Subscribe on server push notification after connection start established. </b>
 
 ```csharp
-  this.endpointConnection = await this.connectionFactory.start('http://localhost:5000');
-  this.endpointConnection.on('web_order_created', (command) => {
+  this.endpointConnection = this.connectionFactory.create(environment.procontelEndpointUrl);
+  await this.endpointConnection.start();
+  await this.endpointConnection.on('order_created', (command) => {
     //some business logic
   });
 });
@@ -112,7 +127,7 @@ This is simple example how we can <b>subscribe</b> on server push notification.
 This is simple example how we can <b>unsubscribe</b> on server push notification.
 
 ```csharp
-  this.endpointConnection.off('web_order_created');
+  await this.endpointConnection.off('order_created');
 ```
 
 <div id='id-angular-post'/>
@@ -120,7 +135,7 @@ This is simple example how we can <b>unsubscribe</b> on server push notification
 * ### Post
 This is simple example how we can send <b>POST</b> command. Operation result will be deliver by server push notification.
 ```csharp
-  this.endpointConnection.on('web_order_created', (command) => {
+  await this.endpointConnection.on('order_created', (command) => {
     //some business logic
   });
 
@@ -145,43 +160,105 @@ This is simple example how we can send <b>GET</b> command. Operation result will
 
 ## 5. React
 
-List of  code samples which describes how to integrate `@macrix/pct-cmd` with `react` framework. 
-
+List of  code samples which describes how to integrate `@macrix/pct-cmd` with `react` framework.
+To run react sample app run command:
+```docker run --rm -p 3000:80 macrix/pct-react-app``` 
 <div id='id-react-start-connection'/>
 
 * ### Start connection
+This is simple example how to start connection with endpoint.
+```csharp
+import { EndpointConnection } from '@macrix/pct-cmd';
 
-Sample construction in progress
+export class EndpointConnectionFactory {
+    public async start(baseUrl: string): Promise<EndpointConnection> {
+        const endpointConnection = new EndpointConnection(baseUrl + '/hubs/commands/');
+        await endpointConnection.start();
+        return endpointConnection;
+    }
+}
+```
+
+or use existing factory method
+```csharp
+import { EndpointConnectionFactory, IEndpointConnection } from '@macrix/pct-cmd';
+
+export const AppComponent: React.FC = props => {
+  const [factory] = React.useState(new EndpointConnectionFactory());
+  const [endpointConnection, setEndpointConnection] = React.useState<IEndpointConnection>(null!);
+  async start() {
+    const connection = factory.create(environment.procontelEndpointUrl);
+    await this.endpointConnection.start();
+    setEndpointConnection(connection);
+  }
+}
+```
 
 <div id='id-react-reconnect'/>
 
 * ### Reconnect
+This is simple example how to appropriate handle reconnect process.
 
-Sample construction in progress
+<b>IMPORTANT: Always unsubscribe and subscribe during reconnect process.  </b>
+
+```csharp
+  const connection = factory.create(environment.procontelEndpointUrl);
+  connection.onconnected(async id => {
+    await connection.off('order_created');
+    await connection.on('order_created', (command) => {
+      //some business logic
+    });
+  });
+  await connection.start();
+```
 
 <div id='id-react-on'/>
 
 * ### On
+This is simple example how we can <b>subscribe</b> on server push notification.
 
-Sample construction in progress
+<b>IMPORTANT: Subscribe on server push notification after connection start established. </b>
 
+```csharp
+  const connection = factory.create(environment.procontelEndpointUrl);
+  await connection.start();
+  await connection.on('order_created', (command) => {
+    //some business logic
+  });
+```
 <div id='id-react-off'/>
 
 * ### Off
+This is simple example how we can <b>unsubscribe</b> on server push notification.
 
-Sample construction in progress
+```csharp
+  await endpointConnection.off('order_created');
+```
 
 <div id='id-react-post'/>
 
 * ### Pos
+This is simple example how we can send <b>POST</b> command. Operation result will be deliver by server push notification.
+```csharp
+  await endpointConnection.on('order_created', (command) => {
+    //some business logic
+  });
 
-Sample construction in progress
+  endpointConnection
+    .post('create_order', command)
+    .then(x => console.log('Command sent.'));
+```
 
 <div id='id-react-get'/>
 
 * ### Get
-
-Sample construction in progress
+This is simple example how we can send <b>GET</b> command. Operation result will be deliver as a <b>GET</b> method result.
+```csharp
+  endpointConnection
+    .get('create_order_sync', this.command)
+    .then(x => {
+      //some business logic
+    }));
 
 <div id='id-deployment'/>
 

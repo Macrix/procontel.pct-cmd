@@ -1,7 +1,7 @@
 import { environment } from './../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EndpointConnection, EndpointConnectionFactory } from '@macrix/pct-cmd';
+import { EndpointConnectionFactory, IEndpointConnection } from '@macrix/pct-cmd';
 import { HubConnectionState } from '@microsoft/signalr';
 
 @Component({
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   }`;
 
   form: FormGroup;
-  endpointConnection: EndpointConnection;
+  endpointConnection: IEndpointConnection;
 
   constructor(
     private connectionFactory: EndpointConnectionFactory,
@@ -34,18 +34,14 @@ export class AppComponent implements OnInit {
   }
 
   async start() {
-    this.endpointConnection = await this.connectionFactory.start(this.form.get('ip').value);
-    this.endpointConnection.onreconnected(id => {
-      this.endpointConnection.off('order_created');
-      this.subscribe();
+    this.endpointConnection = this.connectionFactory.create(this.form.get('ip').value);
+    this.endpointConnection.onconnected(async id => {
+      await this.endpointConnection.off('order_created');
+      await this.endpointConnection.on('order_created', (command) => {
+        this.console.push(`Received notification: ${JSON.stringify(this.command)}.`);
+      });
     });
-    this.subscribe();
-  }
-
-  subscribe() {
-    this.endpointConnection.on('order_created', (command) => {
-      this.console.push(`Received notification: ${JSON.stringify(this.command)}.`);
-    });
+    await this.endpointConnection.start();
   }
 
   async stop() {
