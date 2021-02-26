@@ -1,4 +1,4 @@
 export const environment = {
-  procontelEndpointUrl: 'http://localhost:5000',
+  procontelEndpointUrl: 'http://localhost:9500',
   production: true
 };

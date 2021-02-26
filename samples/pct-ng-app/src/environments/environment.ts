@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  procontelEndpointUrl: 'https://localhost:5001',
+  procontelEndpointUrl: 'http://localhost:9500',
   production: false
 };
 
