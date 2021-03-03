@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
       });
 
       operationsHubConnection.on('eventReceived', (evt) => {
-        this.console.push(`Type: ${evt.type}, container: ${evt.containerId}, endpoint: ${evt.endpointId}.`);
+        this.console.unshift(`${ this.console.length + 1}. Type: ${evt.type}, container: ${evt.containerId}, endpoint: ${evt.endpointId}.`);
         // this.operationChanged.next({
         //   resource: evt.resource,
         //   resourceId: evt.resourceId,

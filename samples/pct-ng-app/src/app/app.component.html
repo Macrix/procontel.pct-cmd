@@ -184,7 +184,7 @@
     text-indent: 4px;
   }
 
-  .terminal pre {
+  .terminal p {
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     color: white;
     padding: 0 1rem 1rem;
@@ -307,7 +307,8 @@
 
 <div class="content" role="main">
   <!-- Next Steps -->
-  <h2>What do you want to do with your endpoint?</h2>
+  <!-- <h2>What do you want to do with your endpoint?</h2> -->
+  <h2>ProconTel BI System</h2>
   <form  [formGroup]="form">
     <mat-form-field appearance="outline">
       <mat-label>Endpoint IP</mat-label>
@@ -364,9 +365,9 @@
 
   <!-- Terminal -->
   <div class="terminal">
-    <pre *ngFor="let item of console; let i = index">
-      {{i+1}}. {{item}}
-   </pre>
+    <p *ngFor="let item of console; let i = index">
+     {{item}}
+    </p>
   </div>
 
   <!-- Links -->
